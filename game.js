@@ -5,7 +5,9 @@ const config = {
     type: Phaser.AUTO,
     width: 1200,
     height: 800,
-    scene: [startScene, mainScene],
+
+    // ADD START SCENE BACK
+    scene: [mainScene],
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
@@ -16,7 +18,7 @@ const config = {
         default: 'arcade',
         arcade: {
             debug: true,
-            gravity: { y: 500 }
+            gravity: { y: 1000 }
         }
     }
 };
