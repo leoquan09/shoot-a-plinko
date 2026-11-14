@@ -11,10 +11,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.cash = 0;
         this.power = 0;
         this.hasSetPower = false;
+
+        this.setCollideWorldBounds(true);
+        this.body.onWorldBounds = true; 
     }
 
     increasePower() {
-        if (this.hasSetPower === false) {
+        if (this.hasSetPower === false && this.power < 2400) {
             this.power += 200;
         }
     }
@@ -24,5 +27,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.hasSetPower = true;
             this.setVelocityX(this.power);
         }
+    }
+
+    reset() {
+        this.body.reset(200, 100);
+        this.setAngle(0);
+        this.setAngularVelocity(0);
+        this.power = 0;
+        this.hasSetPower = false;
     }
 }
