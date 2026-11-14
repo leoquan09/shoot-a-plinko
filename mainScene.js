@@ -35,7 +35,7 @@ export default class mainScene extends Phaser.Scene {
         
         this.input.keyboard.on('keydown-SPACE', () => {
             this.player.increasePower();
-            this.progress += 10;
+            this.progress += 15;
             this.bar.setCrop(0, 0, this.progress, 60);
         });
 
