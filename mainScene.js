@@ -47,7 +47,6 @@ export default class mainScene extends Phaser.Scene {
     collectCash(player, cash) {
         cash.disableBody(true, true)
         this.player.cash += 500
-        console.log("ran cash collect")
     }
 
     create() {
@@ -130,59 +129,28 @@ export default class mainScene extends Phaser.Scene {
         this.board = new Board(this, [
             'verticalWall',
             'bottomWall',
+            'peg',
+            'divider',
+            'cash',
         ])
-    
-        // Create pegs
-        let pegs = this.physics.add.staticGroup();
-        let x_pos = 485
-        let y_pos = 250
-        let num_col = 9
 
-        // Per Row
-        for (let row = 0; row < 9; row++) {
-            // Create Row Offset
-            if (row % 2 === 0) {
-                x_pos += 32.5;
-                num_col -= 1;
-            }
-
-            // Per column
-            for (let col = 0; col < num_col; col++) {
-                pegs.create(x_pos, y_pos, 'peg').setScale(0.5).refreshBody().body.setCircle(8)
-                x_pos += 65;
-            }
-            y_pos += 50
-            x_pos = 485
-            num_col = 9
-        }
-        
-        // Create prize dividers
-        let dividers = this.physics.add.staticGroup();
-        x_pos = 495
-
-        for (let num = 0; num < 11; num++) {
-            dividers.create(x_pos, 715, 'divider')
-            x_pos += 50;
-        }
-
-        // Add cash collection at prize pools
-        this.cash_prize_body = this.physics.add.group({
-            key: 'cash',
-            repeat: 11,
-            setXY: { x: 470, y: 725, stepX: 50 },
-            allowGravity: false,
-        });
-
+        // Cash Collider
         this.physics.add.overlap(
             this.player, 
-            this.cash_prize_body, 
+            this.board.cash_prize_body, 
             this.collectCash, 
             null, 
             this
         );
         
+        
         // Physics Collider
-        this.physics.add.collider(this.player, [this.board.borders, pegs, dividers]);
+        this.physics.add.collider(this.player, [
+            this.board.borders, 
+            this.board.pegs, 
+            this.board.dividers,
+        ]);
+
         // Reset Physics Boundaries
         this.scale.on('resize', (gameSize) => {
             this.physics.world.setBounds(0, 0, gameSize.width, gameSize.height);
@@ -204,12 +172,13 @@ export default class mainScene extends Phaser.Scene {
 
         // Check if in prize box (Make sure player doesn't bounce out)
         if (inXRange && inYRange) {
-            this.player.setVelocityX(0)
+            this.player.setVelocityX(0);
 
             if (isGrounded && Math.abs(this.player.body.velocity.y) < 8 && !this.isResetting) {
                 this.isResetting = true;
                 
                 this.time.delayedCall(2000, () => {
+                    this.board.reset();
                     this.player.reset();
                     this.isResetting = false;
                 }, [], this);
