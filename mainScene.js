@@ -77,8 +77,10 @@ export default class mainScene extends Phaser.Scene {
         this.player = new Player(this, 200, 100, 'player');
         
         // Load Music
-        const music = this.sound.add('theme', { loop: true, volume: 1 });
-        music.play();
+        if (!this.sound.get('theme')) {
+            this.music = this.sound.add('theme', { loop: true, volume: 0.5 });
+            this.music.play();
+        }
 
         // Powerup Create
         let powerups = this.physics.add.staticGroup()
