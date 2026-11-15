@@ -91,6 +91,7 @@ export default class mainScene extends Phaser.Scene {
         this.physics.world.on('worldbounds', (body, up, down, left, right) => {
             if (body.gameObject === this.player) {
                 if (down || left || right) {
+                    this.cashText.setColor("#FF0000")
                     this.player.reset(-1000);
                 }
             }
@@ -145,9 +146,14 @@ export default class mainScene extends Phaser.Scene {
         // Physics Collider
         this.physics.add.collider(this.player, [
             this.board.borders, 
-            this.board.pegs, 
             this.board.dividers,
         ]);
+
+        this.physics.add.collider(this.player, this.board.pegs, (player, peg) => {
+            if (peg.texture.key === '2x cash peg') {
+                this.board.callBackFns['2x']();
+            }
+        })
 
         // Reset Physics Boundaries
         this.scale.on('resize', (gameSize) => {
@@ -187,6 +193,6 @@ export default class mainScene extends Phaser.Scene {
         }
 
         // Update Cash Text
-        this.cashText.setText(this.player.cash)
+        this.cashText.setText(this.player.cash).setColor("#000000")
     }
 }
