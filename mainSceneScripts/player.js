@@ -10,7 +10,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.cash = Number(localStorage.getItem('cash')) || 0;
         this.scene.registry.set('cash', this.cash); 
-        
+
         this.power = 0;
         this.hasSetPower = false;
 
@@ -39,7 +39,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.power = 0;
         this.hasSetPower = false;
         this.setBounce(0.75);
-        this.cash += 500;
+        this.cash += 10;
         this.scene.registry.set('cash', this.cash);
         localStorage.setItem('cash', this.cash);
     }
