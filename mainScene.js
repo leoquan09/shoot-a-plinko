@@ -33,7 +33,7 @@ export default class mainScene extends Phaser.Scene {
         this.load.image('cash', 'assets/images/cash32x16.png')
 
         // Powerups
-        this.load.image('2x cash', 'assets/images/powerups/2x_money32x32.png')
+        this.load.image('2x Cash', 'assets/images/powerups/2x_money32x32.png')
         this.load.image('chance','assets/images/powerups/chance32x32.png')
         this.load.image('player_size','assets/images/powerups/player_size32x32.png')
         this.load.image('respawn','assets/images/powerups/respawn32x16.png')
