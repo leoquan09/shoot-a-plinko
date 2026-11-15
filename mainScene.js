@@ -82,7 +82,6 @@ export default class mainScene extends Phaser.Scene {
 
         // Powerup Create
         let powerups = this.physics.add.staticGroup()
-        // ADD POWERUP CREATE HERE
         
         // Cash Score Create
         this.cashText = this.add.text(1085, 25, this.player.cash, {

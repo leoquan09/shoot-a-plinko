@@ -53,7 +53,7 @@ export default class Board {
                 let name = 'peg';
                 if (this.pegUpgrades.length > 0) {
                     for (const element of this.pegUpgrades) {
-                        let rand_num = Math.random() * 100;
+                        let rand_num = Math.random() * 1000;
                         
                         if (rand_num <= element.chance) {
                             name = element.name;
