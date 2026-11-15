@@ -19,7 +19,7 @@ export default class Shop extends Phaser.Scene {
         ]);
 
         this.pegUpgrades = loadSave('pegUpgrades', [
-            { chance: 1, name: '2x Cash', cost: 700 },
+            { chance: 0.25, name: '2x Cash', cost: 700 },
         ]);
 
         this.cash = this.registry.get('cash') || 0;
@@ -85,7 +85,7 @@ export default class Shop extends Phaser.Scene {
                 if (this.cash >= e.cost) {
                     this.cash -= e.cost;
                     e.cost = Math.round(e.cost * 1.2);
-                    e.chance += 1;
+                    e.chance += 0.25;
 
                     button.setText(`${e.name} (rate: ${e.chance}%): ${e.cost}`);
 
