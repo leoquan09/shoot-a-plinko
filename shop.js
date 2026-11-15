@@ -4,16 +4,20 @@ export default class Shop extends Phaser.Scene {
     }
 
     create() {  
-        let powerups = JSON.parse(localStorage.getItem('powerups')) || [{ 'level': 0, 'name': 'board', 'cost': 500 }, {'level': 0, 'name': 'split', 'cost': 1500}]
+        let globalUpgrades = JSON.parse(localStorage.getItem('globalUpgrades')) || [{'level': 1, 'name': 'speed up', 'cost': 1500}]
+        let pegUpgrades = JSON.parse(localStorage.getItem('pegUpgrades')) || [
+            { 'chance': 0.00, 'name': '2x cash peg', 'cost': 300 }
+        ]
+
         this.cash = this.registry.get('cash') || 0;
 
-        this.cameras.main.setViewport(50, 250, 300, 200);
+        this.cameras.main.setViewport(20, 200, 400, 200);
         this.cameras.main.setBackgroundColor('#222222');
 
-        this.cameras.main.setBounds(0, 0, 300, 200);
+        this.cameras.main.setBounds(0, 0, 400, 500);
 
         let ypos = 0
-        powerups.forEach((e) => {
+        globalUpgrades.forEach((e) => {
             let button = this.add.text(15, 15  + ypos++ * 38, `${e.name} (level ${e.level}): ${e.cost}`, { 
                 fontSize: '20px', 
                 fill: '#ffffff' 

@@ -8,7 +8,7 @@ const config = {
     height: 800,
 
     // ADD START SCENE BACK
-    scene: [mainScene, Shop],
+    scene: [startScene, mainScene, Shop],
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH

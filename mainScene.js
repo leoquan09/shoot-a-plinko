@@ -1,4 +1,5 @@
 import Player from './mainSceneScripts/player.js';
+import Board from './mainSceneScripts/board.js'
 
 export default class mainScene extends Phaser.Scene {
     constructor() {
@@ -8,6 +9,9 @@ export default class mainScene extends Phaser.Scene {
     preload() {
         // Load shop
         this.scene.launch('shop');
+
+        // Background
+        this.load.image('background', 'assets/images/background.jpg')
 
         // Player
         this.load.image('player', 'assets/images/ball.png');
@@ -28,11 +32,35 @@ export default class mainScene extends Phaser.Scene {
         // Font Load
         this.load.font('PressStart2P', 'assets/fonts/PressStart2P-Regular.ttf', 'truetype');
 
+        // Cash
+        this.load.image('cash', 'assets/images/powerups/cash32x16.png')
+
         // Powerups
-        this.load.image('cash_power', 'assets/images/powerups/cash32x16.png')
+        this.load.image('2x_money', 'assets/images/powerups/2x_money32x32.png')
+        this.load.image('chance','assets/images/powerups/chance32x32.png')
+        this.load.image('player_size','assets/images/powerups/player_size32x32.png')
+        this.load.image('respawn','assets/images/powerups/respawn32x16.png')
+        this.load.image('shield','assets/images/powerups/shield32x32.png')
+        this.load.image('speed', 'assets/images/powerups/speed_upgrade32x32.png')
+    }
+
+    collectCash(player, cash) {
+        cash.disableBody(true, true)
+        this.player.cash += 500
+        console.log("ran cash collect")
     }
 
     create() {
+        // Background
+        const { width, height } = this.cameras.main;
+        const bg = this.add.image(width / 2, height / 2, 'background');
+
+        const scaleX = width / bg.width;
+        const scaleY = height / bg.height; 
+        const scale = Math.max(scaleX, scaleY);
+
+        bg.setScale(scale).setScrollFactor(0);
+
         // Player Create
         this.player = new Player(this, 200, 100, 'player');
 
@@ -44,7 +72,7 @@ export default class mainScene extends Phaser.Scene {
         let powerups = this.physics.add.staticGroup()
         // ADD POWERUP CREATE HERE
         
-        // Cash Create
+        // Cash Score Create
         this.cashText = this.add.text(1085, 25, this.player.cash, {
             fontFamily: '"Press Start 2P"',
             fontSize: '32px',
@@ -53,7 +81,7 @@ export default class mainScene extends Phaser.Scene {
         }).setOrigin(1, 0);
 
         // Cash Icon
-        powerups.create(1130, 40, 'cash_power').setScale(2).refreshBody()
+        powerups.create(1130, 40, 'cash').setScale(2).refreshBody()
 
         // Progress Bar
         this.barBg = this.add.image(200, 50, 'emptyBar').setScale(0.75);
@@ -98,13 +126,12 @@ export default class mainScene extends Phaser.Scene {
             }
         });
 
-        // Walls
-        let borders = this.physics.add.staticGroup();
-        borders.create(446, 479, 'verticalWall').setScale(1.1).refreshBody();
-        borders.create(1046, 479, 'verticalWall').setScale(1.1).refreshBody();
-        borders.create(750, 746, 'bottomWall').setScale(2).refreshBody();
-        borders.create(200, 125, 'bottomWall').setScale(0.5).refreshBody();
-
+        // Board Class
+        this.board = new Board(this, [
+            'verticalWall',
+            'bottomWall',
+        ])
+    
         // Create pegs
         let pegs = this.physics.add.staticGroup();
         let x_pos = 485
@@ -137,9 +164,25 @@ export default class mainScene extends Phaser.Scene {
             dividers.create(x_pos, 715, 'divider')
             x_pos += 50;
         }
+
+        // Add cash collection at prize pools
+        this.cash_prize_body = this.physics.add.group({
+            key: 'cash',
+            repeat: 11,
+            setXY: { x: 470, y: 725, stepX: 50 },
+            allowGravity: false,
+        });
+
+        this.physics.add.overlap(
+            this.player, 
+            this.cash_prize_body, 
+            this.collectCash, 
+            null, 
+            this
+        );
         
         // Physics Collider
-        this.physics.add.collider(this.player, [borders, pegs, dividers]);
+        this.physics.add.collider(this.player, [this.board.borders, pegs, dividers]);
         // Reset Physics Boundaries
         this.scale.on('resize', (gameSize) => {
             this.physics.world.setBounds(0, 0, gameSize.width, gameSize.height);
