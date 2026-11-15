@@ -139,15 +139,13 @@ export default class mainScene extends Phaser.Scene {
         });
 
         // Board Class
-        this.board = new Board(this, [
-            // 'verticalWall',
-            // 'bottomWall',
-        ])
+        this.board = new Board(this)
 
         // Cash Collider
-        this.physics.add.overlap(this.player, this.board.cash_prize_body, (player, cash) => {
-            this.collectCash(cash);
-        },
+        this.physics.add.overlap(
+            this.player, 
+            this.board.cash_prize_body, 
+            (player, cash) => {this.collectCash(cash);},
         null, 
         this
         );        
@@ -179,7 +177,7 @@ export default class mainScene extends Phaser.Scene {
         ]);
 
         this.physics.add.collider(this.player, this.board.pegs, (player, peg) => {
-            if (peg.texture.key === '2x cash') {
+            if (peg.texture.key === '2x ash') {
                 this.board.callBackFns['2x']();
             }
         })
