@@ -8,7 +8,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setDragX(75); 
         this.body.setCircle(10);
 
-        this.cash = Number(localStorage.getItem('cash')) || 0;
+        this.cash = Number(localStorage.getItem('cash')) || 500;
         this.scene.registry.set('cash', this.cash); 
 
         this.power = 0;
@@ -39,7 +39,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     reset(cash_amt) {
-        this.body.reset(200, 100);
+        this.body.reset(200, 75);
         this.setAngle(0);
         this.setAngularVelocity(0);
         this.power = 0;

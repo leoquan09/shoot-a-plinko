@@ -29,7 +29,7 @@ export default class Board {
         this.borders.create(446, 479, 'verticalWall').setScale(1.1).refreshBody();
         this.borders.create(1046, 479, 'verticalWall').setScale(1.1).refreshBody();
         this.borders.create(750, 746, 'bottomWall').setScale(2).refreshBody();
-        this.borders.create(200, 125, 'bottomWall').setScale(0.001).refreshBody();
+        this.borders.create(200, 125, 'bottomWall').setScale(0.14).refreshBody();
     }
 
     create_pegs() {

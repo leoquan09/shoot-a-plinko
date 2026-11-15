@@ -177,7 +177,7 @@ export default class mainScene extends Phaser.Scene {
         ]);
 
         this.physics.add.collider(this.player, this.board.pegs, (player, peg) => {
-            if (peg.texture.key === '2x ash') {
+            if (peg.texture.key === '2x Cash') {
                 this.board.callBackFns['2x']();
             }
         })
@@ -186,6 +186,11 @@ export default class mainScene extends Phaser.Scene {
         this.scale.on('resize', (gameSize) => {
             this.physics.world.setBounds(0, 0, gameSize.width, gameSize.height);
         });
+
+        const onCashChange = (parent, value) => {
+            this.player.cash = value;
+        };
+        this.registry.events.on('changedata-cash', onCashChange);
     }
 
     update() {
