@@ -1,5 +1,6 @@
 import startScene from './startScene.js';
 import mainScene from './mainScene.js';
+import Shop from './shop.js';
 
 const config = {
     type: Phaser.AUTO,
@@ -7,7 +8,7 @@ const config = {
     height: 800,
 
     // ADD START SCENE BACK
-    scene: [mainScene],
+    scene: [mainScene, Shop],
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH

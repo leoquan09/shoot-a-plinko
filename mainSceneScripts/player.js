@@ -30,6 +30,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     reset() {
+        console.log("RAN RESET")
         this.body.reset(200, 100);
         this.setAngle(0);
         this.setAngularVelocity(0);
