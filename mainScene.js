@@ -33,7 +33,7 @@ export default class mainScene extends Phaser.Scene {
         this.load.image('cash', 'assets/images/cash32x16.png')
 
         // Powerups
-        this.load.image('2x cash peg', 'assets/images/powerups/2x_money32x32.png')
+        this.load.image('2x cash', 'assets/images/powerups/2x_money32x32.png')
         this.load.image('chance','assets/images/powerups/chance32x32.png')
         this.load.image('player_size','assets/images/powerups/player_size32x32.png')
         this.load.image('respawn','assets/images/powerups/respawn32x16.png')
@@ -41,8 +41,22 @@ export default class mainScene extends Phaser.Scene {
         this.load.image('speed', 'assets/images/powerups/speed_upgrade32x32.png')
     }
 
-    collectCash(player, cash) {
+    collectCash(cash) {
         cash.disableBody(true, true);
+        let bet = false;
+
+        for (const element of this.board.cash_prize_body.getChildren()) {
+            if (element.hasBet === true) {
+                bet = true;
+            }
+        }
+
+        if (cash.hasBet && bet) {
+            this.player.cash *= 4;
+        } else if (cash.hasBet === false && bet) {
+            this.player.cash /= 2;
+        }
+
         this.player.cash += 100;
         this.registry.set('cash', this.player.cash);
         localStorage.setItem('cash', this.player.cash);
@@ -61,7 +75,7 @@ export default class mainScene extends Phaser.Scene {
 
         // Player Create
         this.player = new Player(this, 200, 100, 'player');
-
+        
         // Load Music
         const music = this.sound.add('theme', { loop: true, volume: 0.75 });
         music.play();
@@ -91,8 +105,7 @@ export default class mainScene extends Phaser.Scene {
         this.physics.world.on('worldbounds', (body, up, down, left, right) => {
             if (body.gameObject === this.player) {
                 if (down || left || right) {
-                    this.cashText.setColor("#FF0000")
-                    this.player.reset(-1000);
+                    this.player.reset(-100);
                 }
             }
         });
@@ -132,16 +145,32 @@ export default class mainScene extends Phaser.Scene {
         ])
 
         // Cash Collider
-        this.physics.add.overlap(
-            this.player, 
-            this.board.cash_prize_body, 
-            this.collectCash, 
-            null, 
-            this
+        this.physics.add.overlap(this.player, this.board.cash_prize_body, (player, cash) => {
+            this.collectCash(cash);
+        },
+        null, 
+        this
         );        
         
         // Load shop
         this.scene.launch('shop');
+
+        // Wait time powerup
+        this.waitTime = 2000; 
+
+        const upgrades = this.registry.get('globalUpgrades');
+        if (upgrades && Object.values(upgrades)[0] !== undefined) {
+        this.waitTime = Object.values(upgrades)[0] * 1000;
+        }
+
+        const onLvlChange = (parent, value) => {
+        if (value && Object.values(value)[0] !== undefined) {
+            this.waitTime = Object.values(value)[0] * 1000;
+        }
+        };
+
+        this.registry.events.on('changedata-globalUpgrades', onLvlChange);
+
 
         // Physics Collider
         this.physics.add.collider(this.player, [
@@ -150,7 +179,7 @@ export default class mainScene extends Phaser.Scene {
         ]);
 
         this.physics.add.collider(this.player, this.board.pegs, (player, peg) => {
-            if (peg.texture.key === '2x cash peg') {
+            if (peg.texture.key === '2x cash') {
                 this.board.callBackFns['2x']();
             }
         })
@@ -193,6 +222,6 @@ export default class mainScene extends Phaser.Scene {
         }
 
         // Update Cash Text
-        this.cashText.setText(this.player.cash).setColor("#000000")
+        this.cashText.setText(Math.floor(this.player.cash))
     }
 }

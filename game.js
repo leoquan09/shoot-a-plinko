@@ -1,5 +1,7 @@
 import startScene from './startScene.js';
 import mainScene from './mainScene.js';
+import tutorialScene from './tutorialScene.js'
+import creditsScene from './creditsScene.js'
 import Shop from './shop.js';
 
 const config = {
@@ -8,7 +10,7 @@ const config = {
     height: 800,
 
     // ADD START SCENE BACK
-    scene: [startScene, mainScene, Shop],
+    scene: [startScene, creditsScene, tutorialScene, mainScene, Shop],
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH

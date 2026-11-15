@@ -8,7 +8,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setDragX(75); 
         this.body.setCircle(10);
 
-        this.cash = Number(localStorage.getItem('cash')) || 500;
+        this.cash = Number(localStorage.getItem('cash')) || 0;
         this.scene.registry.set('cash', this.cash); 
 
         this.power = 0;

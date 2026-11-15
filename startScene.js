@@ -18,11 +18,32 @@ export default class startScene extends Phaser.Scene {
 
         bg.setScale(scale).setScrollFactor(0);
 
-        this.add.text(450, 370, 'SHOOT A PLINKO', {
-            fontFamily: 'courier',
-            fontSize: '32px',
+        this.title = this.add.text(625, 370, 'SHOOT A PLINKO', {
+            fontFamily: '"Press Start 2P"',
+            fontSize: '64px',
             color: '#000000'
-        }).setResolution(window.devicePixelRatio);
+        }).setResolution(window.devicePixelRatio).setOrigin(0.5, 0.5);
+
+        this.next = this.add.text(475, 450, 'Press Any Key', {
+            fontFamily: '"Press Start 2P"',
+            fontSize: '24px',
+            color: '#319ac3'
+        })
+
+        this.credits = this.add.text(475, 750, 'Press C for Credits', {
+            fontFamily: '"Press Start 2P"',
+            fontSize: "16px",
+            color: '#316bc3'
+        })
+
+        this.time.addEvent({
+            delay: 500,
+            loop: true,
+            callback: () => {
+                this.next.visible = !this.next.visible;
+            }
+        });
+    
 
         const music = this.sound.add('bgMusic', { loop: true, volume: 1 });
         music.play();
@@ -30,11 +51,17 @@ export default class startScene extends Phaser.Scene {
 
     update() {
         this.input.on('pointerdown', () => {
-            this.scene.start('mainScene');
+            this.scene.start('tutorialScene');
         });
 
         this.input.keyboard.on('keyup', () => {
-            this.scene.start('mainScene');
+            if (event.keyCode !== Phaser.Input.Keyboard.KeyCodes.C) {
+                this.scene.start('tutorialScene');
+            } else {
+                this.scene.start('creditsScene')
+            }
         });
+
+
     }
 }

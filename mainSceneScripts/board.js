@@ -5,7 +5,7 @@ export default class Board {
         this.borders = scene.physics.add.staticGroup();
         this.pegs = scene.physics.add.staticGroup();
         this.dividers = scene.physics.add.staticGroup();
-        this.cash_prize_body = scene.physics.add.staticGroup()
+        this.cash_prize_body = scene.physics.add.staticGroup();
 
         this.create_board()
         this.create_pegs()
@@ -50,12 +50,14 @@ export default class Board {
 
             // Per column
             for (let col = 0; col < num_col; col++) {
+                let name = 'peg';
                 if (this.pegUpgrades.length > 0) {
                     for (const element of this.pegUpgrades) {
                         let rand_num = Math.random() * 100;
                         
                         if (rand_num <= element.chance) {
                             name = element.name;
+                            console.log(element.name)
                             break
                         } else {
                             name = "peg";
@@ -83,12 +85,29 @@ export default class Board {
 
     create_cash() {
         let x_pos = 470;
-        
-        for (let i=0; i < 12; i++) {
-            this.cash_prize_body.create(x_pos, 725, 'cash');
+        let hasBet = false;
+        for (let i = 0; i < 12; i++) {
+            const cash = this.cash_prize_body.create(x_pos, 725, 'cash')
+                .setInteractive()
+                .setTint(0xFFD700);
+            
+            cash.hasBet = false;
+
+            cash.on('pointerdown', (pointer, localX, localY, event) => {
+                if (!hasBet) {
+                    cash.setTint(0xEFBF04);
+                    cash.setScale(1.4);
+                    cash.hasBet = true;
+                    hasBet = true;   
+                }
+                if (event) {
+                    event.stopPropagation();
+                }
+            });
             x_pos += 50;
         }
     }
+
 
     reset() {
         this.borders.clear(true, true);

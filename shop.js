@@ -15,11 +15,11 @@ export default class Shop extends Phaser.Scene {
         };
 
         this.globalUpgrades = loadSave('globalUpgrades', [
-            { level: 1, name: 'speed up', cost: 1500 },
+            { level: 2, name: 'Respawn Time', cost: 1500 },
         ]);
 
         this.pegUpgrades = loadSave('pegUpgrades', [
-            { chance: 1, name: '2x cash', cost: 700 },
+            { chance: 1, name: '2x Cash', cost: 700 },
         ]);
 
         this.cash = this.registry.get('cash') || 0;
@@ -40,14 +40,28 @@ export default class Shop extends Phaser.Scene {
         });
 
         this.globalUpgrades.forEach((e) => {
-            let button = this.add.text(15, 15 + this.ypos++ * 38, `${e.name} (level ${e.level}): ${e.cost}`, { 
+            let button = this.add.text(15, 15 + this.ypos++ * 38, `${e.name} (Time: ${e.level}): ${e.cost}`, { 
                 fontSize: '20px', 
                 fill: '#ffffff' 
             }).setInteractive({ useHandCursor: true });
 
             button.on('pointerover', () => button.setStyle({ backgroundColor: '#555555' }));
             button.on('pointerout', () => button.setStyle({ backgroundColor: 'transparent' }));
-            button.on('pointerup', () => console.log('Global button clicked'));
+            button.on('pointerup', () => {
+                if (this.cash >= e.cost && e.level >= 0.5) {
+                    this.cash -= e.cost;
+                    e.cost = Math.round(e.cost * 1.1);
+                    e.level -= 0.25;
+
+                    button.setText(`${e.name} (time: ${e.level}): ${e.cost}`);
+
+                    localStorage.setItem('globalUpgrades', JSON.stringify(this.globalUpgrades));
+                    this.registry.set('globalUpgrades', this.globalUpgrades);
+                    
+                    localStorage.setItem('cash', this.cash.toString());
+                    this.registry.set('cash', this.cash);
+                }
+            });
         });
 
         this.makeExtraSpace(15);
@@ -59,7 +73,7 @@ export default class Shop extends Phaser.Scene {
         });
 
         this.pegUpgrades.forEach((e) => {
-            let button = this.add.text(15, 15 + this.ypos++ * 38, `${e.name} (rate: ${e.chance}%): ${e.cost}`, { 
+            let button = this.add.text(15, 15 + this.ypos++ * 38, `${e.name} (Rate: ${e.chance}%): ${e.cost}`, { 
                 fontSize: '20px', 
                 fill: '#ffffff' 
             }).setInteractive({ useHandCursor: true });
