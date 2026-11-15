@@ -6,6 +6,7 @@ export default class startScene extends Phaser.Scene {
     preload() {
         this.load.image('bg', 'assets/images/background.jpg');
         this.load.audio('bgMusic', 'assets/audio/background.mp3');
+        this.load.image('title-img', 'assets/images/title_img.png');
     }
 
     create() {
@@ -18,13 +19,15 @@ export default class startScene extends Phaser.Scene {
 
         bg.setScale(scale).setScrollFactor(0);
 
-        this.title = this.add.text(625, 370, 'SHOOT A PLINKO', {
+        const title_img = this.add.image(600, 200, 'title-img').setScale(20)
+
+        this.title = this.add.text(625, 460, 'SHOOT A PLINKO', {
             fontFamily: '"Press Start 2P"',
             fontSize: '64px',
             color: '#000000'
         }).setResolution(window.devicePixelRatio).setOrigin(0.5, 0.5);
 
-        this.next = this.add.text(475, 450, 'Press Any Key', {
+        this.next = this.add.text(475, 525, 'Press Any Key', {
             fontFamily: '"Press Start 2P"',
             fontSize: '24px',
             color: '#319ac3'
