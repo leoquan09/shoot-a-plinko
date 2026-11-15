@@ -122,10 +122,26 @@ export default class mainScene extends Phaser.Scene {
             dividers.create(x_pos, 715, 'divider')
             x_pos += 50
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         
         // Physics Collider
         this.physics.add.collider(this.player, [borders, pegs, dividers]);
-
         // Reset Physics Boundaries
         this.scale.on('resize', (gameSize) => {
             this.physics.world.setBounds(0, 0, gameSize.width, gameSize.height);
@@ -134,23 +150,24 @@ export default class mainScene extends Phaser.Scene {
 
     update() {
         const inXRange = this.player.x >= 446 && this.player.x <= 1046;
-        const inYRange = this.player.y >= 680 && this.player.y <= 725;
+        const inYRange = this.player.y >= 700 && this.player.y <= 750;
         const isGrounded = this.player.body.touching.down || this.player.body.blocked.down;
 
         // Check if in prize box (Make sure player doesn't bounce out)
         if (inXRange && inYRange) {
             this.player.setVelocityX(0)
 
-            if (isGrounded && !this.isResetting) {
+            if (isGrounded && Math.abs(this.player.body.velocity.y) < 8 && !this.isResetting) {
                 this.isResetting = true;
+                console.log("Resetting 1")
                 this.time.delayedCall(2000, () => {
                     this.player.reset();
                     this.isResetting = false;
                 }, [], this);
-            }
+            } 
 
         } else if (this.player.body.velocity.x === 0 && inXRange) { // If player standing still on top of peg / prize post
-            this.player.setVelocityX(5)
+            this.player.setVelocityX(20)
         }
     }
 }
