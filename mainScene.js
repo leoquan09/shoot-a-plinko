@@ -7,9 +7,6 @@ export default class mainScene extends Phaser.Scene {
     }
 
     preload() {
-        // Load shop
-        this.scene.launch('shop');
-
         // Background
         this.load.image('background', 'assets/images/background.jpg')
 
@@ -33,7 +30,7 @@ export default class mainScene extends Phaser.Scene {
         this.load.font('PressStart2P', 'assets/fonts/PressStart2P-Regular.ttf', 'truetype');
 
         // Cash
-        this.load.image('cash', 'assets/images/powerups/cash32x16.png')
+        this.load.image('cash', 'assets/images/cash32x16.png')
 
         // Powerups
         this.load.image('2x_money', 'assets/images/powerups/2x_money32x32.png')
@@ -45,8 +42,10 @@ export default class mainScene extends Phaser.Scene {
     }
 
     collectCash(player, cash) {
-        cash.disableBody(true, true)
-        this.player.cash += 1000
+        cash.disableBody(true, true);
+        this.player.cash += 1000;
+        this.registry.set('cash', this.player.cash);
+        localStorage.setItem('cash', this.player.cash);
     }
 
     create() {
@@ -127,11 +126,8 @@ export default class mainScene extends Phaser.Scene {
 
         // Board Class
         this.board = new Board(this, [
-            'verticalWall',
-            'bottomWall',
-            'peg',
-            'divider',
-            'cash',
+            // 'verticalWall',
+            // 'bottomWall',
         ])
 
         // Cash Collider
@@ -141,9 +137,11 @@ export default class mainScene extends Phaser.Scene {
             this.collectCash, 
             null, 
             this
-        );
+        );        
         
-        
+        // Load shop
+        this.scene.launch('shop');
+
         // Physics Collider
         this.physics.add.collider(this.player, [
             this.board.borders, 

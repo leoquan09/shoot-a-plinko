@@ -16,6 +16,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.setCollideWorldBounds(true);
         this.body.onWorldBounds = true; 
+
+        scene.registry.events.on('changedata-cash', (parent, value) => {
+            if (this.cash !== value) {
+                this.cash = value;
+                localStorage.setItem('cash', value);
+            }
+        });
     }
 
     increasePower(increase) {

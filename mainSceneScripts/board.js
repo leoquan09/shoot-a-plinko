@@ -1,7 +1,6 @@
 export default class Board {
-    constructor(scene, textures) {
+    constructor(scene) {
         this.scene = scene
-        this.textures = textures;
     
         this.borders = scene.physics.add.staticGroup();
         this.pegs = scene.physics.add.staticGroup();
@@ -12,20 +11,26 @@ export default class Board {
         this.create_pegs()
         this.create_dividers()
         this.create_cash()
+
+        scene.registry.events.on('changedata-pegUpgrades', (parent, value) => {
+            this.pegUpgrades = value
+        });
     }
 
     create_board() {
-        this.borders.create(446, 479, this.textures[0]).setScale(1.1).refreshBody();
-        this.borders.create(1046, 479, this.textures[0]).setScale(1.1).refreshBody();
-        this.borders.create(750, 746, this.textures[1]).setScale(2).refreshBody();
-        this.borders.create(200, 125, this.textures[1]).setScale(0.001).refreshBody();
+        this.borders.create(446, 479, 'verticalWall').setScale(1.1).refreshBody();
+        this.borders.create(1046, 479, 'verticalWall').setScale(1.1).refreshBody();
+        this.borders.create(750, 746, 'bottomWall').setScale(2).refreshBody();
+        this.borders.create(200, 125, 'bottomWall').setScale(0.001).refreshBody();
     }
 
     create_pegs() {
+        this.pegUpgrades = this.scene.registry.get('pegUpgrades') || JSON.parse(localStorage.getItem('pegUpgrades')) || [];
+
         // Create pegs
-        let x_pos = 485
-        let y_pos = 250
-        let num_col = 9
+        let x_pos = 485;
+        let y_pos = 250;
+        let num_col = 9;
 
         // Per Row
         for (let row = 0; row < 9; row++) {
@@ -37,12 +42,25 @@ export default class Board {
 
             // Per column
             for (let col = 0; col < num_col; col++) {
-                this.pegs.create(x_pos, y_pos, 'peg').setScale(0.5).refreshBody().body.setCircle(8)
-                x_pos += 65;
-            }
-            y_pos += 50
-            x_pos = 485
-            num_col = 9
+                if (this.pegUpgrades.length > 0) {
+                    for (const element of this.pegUpgrades) {
+                        let rand_num = Math.random() * 100;
+                        
+                        if (rand_num <= element.chance) {
+                            name = element.name;
+                            break
+                        } else {
+                            name = "peg";
+                        }
+                    }
+                }
+                this.pegs.create(x_pos, y_pos, name).setScale(0.5).refreshBody().body.setCircle(8)
+                        x_pos += 65;
+            };
+                    
+            y_pos += 50;
+            x_pos = 485;
+            num_col = 9;
         }
     }
 
@@ -56,11 +74,11 @@ export default class Board {
     }
 
     create_cash() {
-        let x_pos = 470
+        let x_pos = 470;
         
         for (let i=0; i < 12; i++) {
-            this.cash_prize_body.create(x_pos, 725, 'cash')
-            x_pos += 50
+            this.cash_prize_body.create(x_pos, 725, 'cash');
+            x_pos += 50;
         }
     }
 
