@@ -31,14 +31,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    reset() {
+    reset(cash_amt) {
         this.body.reset(200, 100);
         this.setAngle(0);
         this.setAngularVelocity(0);
         this.power = 0;
         this.hasSetPower = false;
         this.setBounce(0.75);
-        this.cash += 10;
+        this.cash += cash_amt;
         this.scene.registry.set('cash', this.cash);
         localStorage.setItem('cash', this.cash);
     }

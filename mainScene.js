@@ -46,7 +46,7 @@ export default class mainScene extends Phaser.Scene {
 
     collectCash(player, cash) {
         cash.disableBody(true, true)
-        this.player.cash += 500
+        this.player.cash += 1000
     }
 
     create() {
@@ -92,7 +92,7 @@ export default class mainScene extends Phaser.Scene {
         this.physics.world.on('worldbounds', (body, up, down, left, right) => {
             if (body.gameObject === this.player) {
                 if (down || left || right) {
-                    this.player.reset();
+                    this.player.reset(-1000);
                 }
             }
         });
@@ -179,7 +179,7 @@ export default class mainScene extends Phaser.Scene {
                 
                 this.time.delayedCall(2000, () => {
                     this.board.reset();
-                    this.player.reset();
+                    this.player.reset(0);
                     this.isResetting = false;
                 }, [], this);
             } 
