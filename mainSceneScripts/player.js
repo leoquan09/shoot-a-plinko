@@ -18,9 +18,9 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.onWorldBounds = true; 
     }
 
-    increasePower() {
+    increasePower(increase) {
         if (this.hasSetPower === false && this.power < 2400) {
-            this.power += 200;
+            this.power += increase;
         }
     }
 
@@ -32,7 +32,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     reset() {
-        console.log("RAN RESET")
         this.body.reset(200, 100);
         this.setAngle(0);
         this.setAngularVelocity(0);

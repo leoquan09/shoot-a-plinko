@@ -74,13 +74,13 @@ export default class mainScene extends Phaser.Scene {
         this.isCharging = false;
 
         this.input.keyboard.on('keydown-SPACE', () => {
-            this.player.increasePower();
+            this.player.increasePower(200);
             this.progress += 15;
             this.bar.setCrop(0, 0, this.progress, 60);
         });
 
         this.input.keyboard.on('keyup-SPACE', () => {
-            this.player.shoot();
+            this.player.shoot(200);
             this.progress = 0;
             this.bar.setCrop(0, 0, 0, 60);
         });
@@ -92,7 +92,7 @@ export default class mainScene extends Phaser.Scene {
         this.input.on('pointerup', () => {
             if (this.isCharging) {
                 this.isCharging = false;
-                this.player.shoot();
+                this.player.shoot(200);
                 this.progress = 0;
                 this.bar.setCrop(0, 0, 0, 60);
             }
@@ -149,11 +149,12 @@ export default class mainScene extends Phaser.Scene {
     update() {
         // Charging for mouse and touch screen
         if (this.isCharging) {
-            this.player.increasePower();
-            this.progress += 15; 
+            this.player.increasePower(20);
+            this.progress += 1; 
             this.bar.setCrop(0, 0, this.progress, 60);
         }
 
+        // Respawning Mechanics
         const inXRange = this.player.x >= 446 && this.player.x <= 1046;
         const inYRange = this.player.y >= 700 && this.player.y <= 750;
         const isGrounded = this.player.body.touching.down || this.player.body.blocked.down;
@@ -164,7 +165,7 @@ export default class mainScene extends Phaser.Scene {
 
             if (isGrounded && Math.abs(this.player.body.velocity.y) < 8 && !this.isResetting) {
                 this.isResetting = true;
-                console.log("Resetting 1")
+                
                 this.time.delayedCall(2000, () => {
                     this.player.reset();
                     this.isResetting = false;
@@ -175,6 +176,7 @@ export default class mainScene extends Phaser.Scene {
             this.player.setVelocityX(20)
         }
 
+        // Update Cash Text
         this.cashText.setText(this.player.cash)
     }
 }
