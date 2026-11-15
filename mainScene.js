@@ -150,7 +150,7 @@ export default class mainScene extends Phaser.Scene {
         // Charging for mouse and touch screen
         if (this.isCharging) {
             this.player.increasePower(20);
-            this.progress += 1; 
+            this.progress += 1.5; 
             this.bar.setCrop(0, 0, this.progress, 60);
         }
 
