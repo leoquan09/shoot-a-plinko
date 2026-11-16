@@ -63,8 +63,6 @@ export default class mainScene extends Phaser.Scene {
     }
 
     create() {
-
-        localStorage.clear();
         // Background
         const { width, height } = this.cameras.main;
         const bg = this.add.image(width / 2, height / 2, 'background');
