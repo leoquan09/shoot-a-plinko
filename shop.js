@@ -19,7 +19,7 @@ export default class Shop extends Phaser.Scene {
         ]);
 
         this.pegUpgrades = loadSave('pegUpgrades', [
-            { chance: 0.25, name: '2x Cash', cost: 700 },
+            { chance: 0.5, name: '2x Cash', cost: 700 },
         ]);
 
         this.cash = this.registry.get('cash') || 0;
