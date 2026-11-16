@@ -42,6 +42,7 @@ export default class mainScene extends Phaser.Scene {
     }
 
     collectCash(cash) {
+        localStorage.clear();
         cash.disableBody(true, true);
         let bet = false;
 
