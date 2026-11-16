@@ -51,7 +51,7 @@ export default class Shop extends Phaser.Scene {
                 if (this.cash >= e.cost && e.level >= 0.5) {
                     this.cash -= e.cost;
                     e.cost = Math.round(e.cost * 1.075);
-                    e.level -= 0.5;
+                    e.level -= 0.25;
 
                     button.setText(`${e.name} (time: ${e.level}): ${e.cost}`);
 
@@ -84,8 +84,8 @@ export default class Shop extends Phaser.Scene {
             button.on('pointerup', () => {
                 if (this.cash >= e.cost) {
                     this.cash -= e.cost;
-                    e.cost = Math.round(e.cost * 1.2);
-                    e.chance += 0.25;
+                    e.cost = Math.round(e.cost * 1.1);
+                    e.chance += 0.5;
 
                     button.setText(`${e.name} (rate: ${e.chance}%): ${e.cost}`);
 
