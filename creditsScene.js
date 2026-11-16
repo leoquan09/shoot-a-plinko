@@ -60,7 +60,8 @@ export default class creditsScene extends Phaser.Scene {
             }
         });
 
-        const music = this.sound.add('bgMusic', { loop: true, volume: 1 });
+        const music = this.sound.add('bgMusic', { loop: true });
+        music.setVolume(0.25)
         music.play();
     }
 

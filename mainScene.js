@@ -24,7 +24,8 @@ export default class mainScene extends Phaser.Scene {
         this.load.image('emptyBar', 'assets/images/progress_bar/empty.png');
 
         // Audio
-        this.load.audio('theme', 'assets/audio/background.mp3');
+        this.load.audio('themeA', 'assets/audio/background.mp3');
+        this.load.audio('themeB', 'assets/audio/background2.mp3');
 
         // Font Load
         this.load.font('PressStart2P', 'assets/fonts/PressStart2P-Regular.ttf', 'truetype');
@@ -62,6 +63,20 @@ export default class mainScene extends Phaser.Scene {
         localStorage.setItem('cash', this.player.cash);
     }
 
+    playNextTrack() {
+        const trackKey = this.playlist[this.currentTrackIndex];
+        
+        this.music = this.sound.add(trackKey, { loop: false, volume: 0.25 });
+        this.music.play();
+
+        this.music.once('complete', () => {
+            this.music.destroy(); 
+            
+            this.currentTrackIndex = (this.currentTrackIndex + 1) % this.playlist.length;
+            this.playNextTrack();
+        });
+    }
+
     create() {
         // Background
         const { width, height } = this.cameras.main;
@@ -77,9 +92,13 @@ export default class mainScene extends Phaser.Scene {
         this.player = new Player(this, 200, 100, 'player');
         
         // Load Music
-        if (!this.sound.get('theme')) {
-            this.music = this.sound.add('theme', { loop: true, volume: 0.5 });
-            this.music.play();
+        this.playlist = ['themeA', 'themeB'];
+
+        const isPlaying = this.playlist.some(track => this.sound.get(track));
+
+        if (!isPlaying) {
+            this.currentTrackIndex = 0;
+            this.playNextTrack();
         }
 
         // Powerup Create
