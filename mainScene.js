@@ -92,7 +92,9 @@ export default class mainScene extends Phaser.Scene {
         this.player = new Player(this, 200, 100, 'player');
         
         // Load Music
-        this.playlist = ['themeA', 'themeB'];
+        this.game.sound.stopAll();
+
+        this.playlist = ['themeB', 'themeA'];
 
         const isPlaying = this.playlist.some(track => this.sound.get(track));
 

@@ -47,6 +47,7 @@ export default class startScene extends Phaser.Scene {
             }
         });
     
+        this.game.sound.stopAll();
 
         const music = this.sound.add('bgMusic', { loop: true });
         music.setVolume(0.25)
