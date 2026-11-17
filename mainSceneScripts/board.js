@@ -17,8 +17,8 @@ export default class Board {
         });
 
         this.callBackFns = {
-            '2x': () => {
-                this.scene.player.cash *= 2;
+            '2x': (earnable) => {
+                earnable *= 2;
                 this.scene.registry.set('cash', this.scene.player.cash);
                 localStorage.setItem('cash', this.scene.player.cash);
             }

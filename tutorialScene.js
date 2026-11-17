@@ -9,6 +9,11 @@ export default class tutorialScene extends Phaser.Scene {
     }
 
     create() {
+        this.game.sound.stopAll();
+        const music = this.sound.add("bgMusic", { loop: true });
+        music.setVolume(0.25);
+        music.play();
+
         const { width, height } = this.cameras.main;
         const bg = this.add.image(width / 2, height / 2, 'bg');
 
@@ -55,12 +60,6 @@ export default class tutorialScene extends Phaser.Scene {
                 this.next.visible = !this.next.visible;
             }
         });
-
-        this.game.sound.stopAll();
-
-        const music = this.sound.add('bgMusic', { loop: true });
-        music.setVolume(0.25)
-        music.play();
     }
 
     update() {

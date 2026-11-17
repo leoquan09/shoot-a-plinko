@@ -44,6 +44,7 @@ export default class mainScene extends Phaser.Scene {
 
     collectCash(cash) {
         cash.disableBody(true, true);
+        let willEarn = 100;
         let bet = false;
 
         for (const element of this.board.cash_prize_body.getChildren()) {
@@ -53,12 +54,12 @@ export default class mainScene extends Phaser.Scene {
         }
 
         if (cash.hasBet && bet) {
-            this.player.cash *= 4;
+            willEarn *= 4;
         } else if (cash.hasBet === false && bet) {
-            this.player.cash /= 2;
+            willEarn /= 2;
         }
 
-        this.player.cash += 100;
+        this.player.cash += willEarn;
         this.registry.set('cash', this.player.cash);
         localStorage.setItem('cash', this.player.cash);
     }
@@ -78,6 +79,17 @@ export default class mainScene extends Phaser.Scene {
     }
 
     create() {
+        // Music
+        this.game.sound.stopAll();
+        this.playlist = ["themeB", "themeA"];
+
+        const isPlaying = this.playlist.some((track) => this.sound.get(track));
+
+        if (!isPlaying) {
+          this.currentTrackIndex = 0;
+          this.playNextTrack();
+        }
+
         // Background
         const { width, height } = this.cameras.main;
         const bg = this.add.image(width / 2, height / 2, 'background');
@@ -90,18 +102,6 @@ export default class mainScene extends Phaser.Scene {
 
         // Player Create
         this.player = new Player(this, 200, 100, 'player');
-        
-        // Load Music
-        this.game.sound.stopAll();
-
-        this.playlist = ['themeB', 'themeA'];
-
-        const isPlaying = this.playlist.some(track => this.sound.get(track));
-
-        if (!isPlaying) {
-            this.currentTrackIndex = 0;
-            this.playNextTrack();
-        }
 
         // Powerup Create
         let powerups = this.physics.add.staticGroup()
