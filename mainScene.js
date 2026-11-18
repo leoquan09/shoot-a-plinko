@@ -81,6 +81,18 @@ export default class mainScene extends Phaser.Scene {
     }
 
     create() {
+        // Check users save state
+        const CURRENT_SAVE_VERSION = '2';
+
+        if (localStorage.getItem('saveVersion') !== CURRENT_SAVE_VERSION) {
+            localStorage.removeItem('pegUpgrades');
+            localStorage.removeItem('globalUpgrades');
+            localStorage.removeItem('cash');
+            localStorage.setItem('saveVersion', CURRENT_SAVE_VERSION);
+        }
+
+
+
         // Track round multiplier
         this.multiplier = 1;
 
@@ -199,6 +211,7 @@ export default class mainScene extends Phaser.Scene {
         ]);
 
         this.physics.add.collider(this.player, this.board.pegs, (player, peg) => {
+            console.log(peg.texture.key);
             if (peg.texture.key === '2x Cash' && !peg.isTriggered) {
                 peg.isTriggered = true;
                 this.multiplier *= 2;
