@@ -1,5 +1,6 @@
 import Player from './mainSceneScripts/player.js';
 import Board from './mainSceneScripts/board.js';
+import { QuotaManager } from './mainSceneScripts/quota.js';
 
 export default class mainScene extends Phaser.Scene {
     constructor() {
@@ -113,6 +114,16 @@ export default class mainScene extends Phaser.Scene {
         const scale = Math.max(scaleX, scaleY);
         bg.setScale(scale).setScrollFactor(0);
 
+        // Quota create
+        this.quota = new QuotaManager();
+        this.shotsLeft = localStorage.getItem('shotsLeft') ? parseInt(localStorage.getItem('shotsLeft')) : 10;
+        this.shotsLeftText = this.add.text(1180, 70, `${this.shotsLeft} shots left to get ${this.quota.getTarget()}`, {
+            fontFamily: '"Press Start 2P"',
+            fontSize: '20px',
+            color: 'black',
+            align: 'right'
+        }).setOrigin(1, 0);
+
         // Player Create
         this.player = new Player(this, 200, 100, 'player');
 
@@ -157,9 +168,14 @@ export default class mainScene extends Phaser.Scene {
         });
 
         this.input.keyboard.on('keyup-SPACE', () => {
-            this.player.shoot(200);
-            this.progress = 0;
-            this.bar.setCrop(0, 0, 0, 60);
+            if (this.shotsLeft != 0) {
+                console.log(this.shotsLeft);
+                this.player.shoot(200);
+                this.progress = 0;
+                this.bar.setCrop(0, 0, 0, 60);
+                this.shotsLeft -= 1;
+                this.shotsLeftText.text = `${this.shotsLeft} shots left to get ${this.quota.getTarget()}`;
+            };
         });
 
         this.input.on('pointerdown', () => {
@@ -167,11 +183,14 @@ export default class mainScene extends Phaser.Scene {
         });
 
         this.input.on('pointerup', () => {
-            if (this.isCharging) {
+            if (this.isCharging && this.shotsLeft != 0) {
+                console.log(this.shotsLeft);
                 this.isCharging = false;
                 this.player.shoot(200);
                 this.progress = 0;
                 this.bar.setCrop(0, 0, 0, 60);
+                this.shotsLeft -= 1
+                this.shotsLeftText.text = `${this.shotsLeft} shots left to get ${this.quota.getTarget()}`;
             }
         });
 
