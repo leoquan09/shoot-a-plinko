@@ -35,7 +35,8 @@ export default class mainScene extends Phaser.Scene {
         this.load.image('cash', 'assets/images/cash32x16.png');
 
         // Next round button load
-        this.load.image('canPass', 'assets/images/clickablePass.png')
+        this.load.image('canPass', 'assets/images/clickablePass.png');
+        this.load.image('cannotPass', 'assets/images/unclickablePass.png');
 
         // Powerups
         this.load.image('2x Cash', 'assets/images/powerups/2x_money32x32.png');
@@ -127,7 +128,18 @@ export default class mainScene extends Phaser.Scene {
             align: 'right'
         }).setOrigin(1, 0);
 
-        this.passBtn = this.add.image(100, 600, 'canPass').setScale(6);
+        this.passBtn = this.add.image(215, 650, 'canPass').setScale(4).setInteractive({ useHandCursor: true });
+
+        this.passBtn.on('pointerdown', (pointer, x, y, e) => e.stopPropagation());
+
+        this.passBtn.on('pointerup', (pointer, x, y, e) => {
+            e.stopPropagation()
+            if (this.quota.isMet(this.player.cash)) {
+                console.log('pass');
+            } else {
+                console.log('fail');
+            }
+        });
 
         // Player Create
         this.player = new Player(this, 200, 100, 'player');
@@ -262,6 +274,13 @@ export default class mainScene extends Phaser.Scene {
     }
 
     update() {
+        // Pass button update
+        if (!this.quota.isMet(this.player.cash)) {
+            this.passBtn.setTexture('cannotPass');
+        } else {
+            this.passBtn.setTexture('canPass');
+        }
+
         // Charging for mouse and touch screen
         if (this.isCharging) {
             this.player.increasePower(20);
