@@ -34,6 +34,9 @@ export default class mainScene extends Phaser.Scene {
         // Cash
         this.load.image('cash', 'assets/images/cash32x16.png');
 
+        // Next round button load
+        this.load.image('canPass', 'assets/images/clickablePass.png')
+
         // Powerups
         this.load.image('2x Cash', 'assets/images/powerups/2x_money32x32.png');
         this.load.image('chance', 'assets/images/powerups/chance32x32.png');
@@ -123,6 +126,8 @@ export default class mainScene extends Phaser.Scene {
             color: 'black',
             align: 'right'
         }).setOrigin(1, 0);
+
+        this.passBtn = this.add.image(100, 600, 'canPass').setScale(6);
 
         // Player Create
         this.player = new Player(this, 200, 100, 'player');
