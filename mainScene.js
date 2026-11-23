@@ -185,7 +185,7 @@ export default class mainScene extends Phaser.Scene {
         });
 
         this.input.keyboard.on('keyup-SPACE', () => {
-            if (this.shotsLeft != 0) {
+            if (this.shotsLeft > 0) {
                 console.log(this.shotsLeft);
                 this.player.shoot(200);
                 this.progress = 0;
@@ -200,7 +200,7 @@ export default class mainScene extends Phaser.Scene {
         });
 
         this.input.on('pointerup', () => {
-            if (this.isCharging && this.shotsLeft != 0) {
+            if (this.isCharging && this.shotsLeft > 0) {
                 console.log(this.shotsLeft);
                 this.isCharging = false;
                 this.player.shoot(200);
@@ -279,6 +279,13 @@ export default class mainScene extends Phaser.Scene {
             this.passBtn.setTexture('cannotPass');
         } else {
             this.passBtn.setTexture('canPass');
+        }
+
+        // Death checking
+        if (this.shotsLeft <= 0 && !this.quota.isMet(this.player.cash)) {
+            console.log('death');
+        } else if (this.shotsLeft <= 0 && this.quota.isMet(this.player.cash)) {
+            console.log('passed');
         }
 
         // Charging for mouse and touch screen
