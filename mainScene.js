@@ -135,7 +135,9 @@ export default class mainScene extends Phaser.Scene {
         this.passBtn.on('pointerup', (pointer, x, y, e) => {
             e.stopPropagation()
             if (this.quota.isMet(this.player.cash)) {
-                console.log('pass');
+                this.quota.nextRound();
+                this.shotsLeftText.text = `${this.shotsLeft} shots left to get ${this.quota.getTarget()}`;
+                this.player.cash = 0;
             } else {
                 console.log('fail');
             }
