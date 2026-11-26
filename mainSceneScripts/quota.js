@@ -30,9 +30,11 @@ export class QuotaManager {
 
   nextRound() {
     this.currentRound++;
+    localStorage.setItem('level', this.currentRound);
   }
 
   reset() {
     this.currentRound = 1;
+    localStorage.setItem('level', this.currentRound);
   }
 }

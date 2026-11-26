@@ -3,13 +3,14 @@ import mainScene from './mainScene.js';
 import tutorialScene from './tutorialScene.js'
 import creditsScene from './creditsScene.js'
 import Shop from './shop.js';
+import DeathScene from './deathScene.js';
 
 const config = {
   type: Phaser.AUTO,
   width: 1200,
   height: 800,
 
-  scene: [startScene, creditsScene, tutorialScene, mainScene, Shop],
+  scene: [startScene, creditsScene, tutorialScene, mainScene, Shop, DeathScene],
   scale: {
     parent: "game-container",
     mode: Phaser.Scale.FIT,

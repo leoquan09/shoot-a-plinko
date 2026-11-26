@@ -85,6 +85,18 @@ export default class mainScene extends Phaser.Scene {
         });
     }
 
+    advanceRound() {
+        this.quota.nextRound();
+        this.player.cash = 0;
+        this.registry.set('cash', 0);
+        this.cashText.text = `${this.player.cash}`; 
+        this.shotsLeft = 10;
+        this.shotsLeftText.text = `${this.shotsLeft} shots left to get ${this.quota.getTarget()}`;
+        this.roundText.text = `Current round: ${this.quota.currentRound}`;
+        localStorage.setItem('cash', 0);
+        localStorage.removeItem('shotsLeft');
+    }
+
     create() {
         // Check users save state
         const CURRENT_SAVE_VERSION = '2';
@@ -93,6 +105,8 @@ export default class mainScene extends Phaser.Scene {
             localStorage.removeItem('pegUpgrades');
             localStorage.removeItem('globalUpgrades');
             localStorage.removeItem('cash');
+            localStorage.removeItem('shotsLeft');
+            localStorage.removeItem('level');
             localStorage.setItem('saveVersion', CURRENT_SAVE_VERSION);
         }
 
@@ -128,20 +142,26 @@ export default class mainScene extends Phaser.Scene {
             align: 'right'
         }).setOrigin(1, 0);
 
+        this.roundText = this.add.text(1180, 100, `Current round: ${this.quota.currentRound}`, {
+            fontFamily: '"Press Start 2P"',
+            fontSize: '20px',
+            color: 'black',
+            align: 'right'
+        }).setOrigin(1, 0);
+
         this.passBtn = this.add.image(215, 650, 'canPass').setScale(4).setInteractive({ useHandCursor: true });
 
         this.passBtn.on('pointerdown', (pointer, x, y, e) => e.stopPropagation());
 
         this.passBtn.on('pointerup', (pointer, x, y, e) => {
-            e.stopPropagation()
+            e.stopPropagation();
             if (this.quota.isMet(this.player.cash)) {
-                this.quota.nextRound();
-                this.shotsLeftText.text = `${this.shotsLeft} shots left to get ${this.quota.getTarget()}`;
-                this.player.cash = 0;
+                this.advanceRound()
             } else {
                 console.log('fail');
             }
         });
+
 
         // Player Create
         this.player = new Player(this, 200, 100, 'player');
@@ -193,6 +213,7 @@ export default class mainScene extends Phaser.Scene {
                 this.progress = 0;
                 this.bar.setCrop(0, 0, 0, 60);
                 this.shotsLeft -= 1;
+                localStorage.setItem('shotsLeft', this.shotsLeft);
                 this.shotsLeftText.text = `${this.shotsLeft} shots left to get ${this.quota.getTarget()}`;
             };
         });
@@ -208,7 +229,8 @@ export default class mainScene extends Phaser.Scene {
                 this.player.shoot(200);
                 this.progress = 0;
                 this.bar.setCrop(0, 0, 0, 60);
-                this.shotsLeft -= 1
+                this.shotsLeft -= 1;
+                localStorage.setItem('shotsLeft', this.shotsLeft);
                 this.shotsLeftText.text = `${this.shotsLeft} shots left to get ${this.quota.getTarget()}`;
             }
         });
@@ -241,6 +263,12 @@ export default class mainScene extends Phaser.Scene {
             }
         };
         this.registry.events.on('changedata-globalUpgrades', onLvlChange);
+
+        this.events.once('shutdown', () => {
+            this.registry.events.off('changedata-globalUpgrades', onLvlChange);
+            this.registry.events.off('changedata-cash', onCashChange);
+        });
+
 
         // Physics Collider
         this.physics.add.collider(this.player, [
@@ -284,10 +312,18 @@ export default class mainScene extends Phaser.Scene {
         }
 
         // Death checking
-        if (this.shotsLeft <= 0 && !this.quota.isMet(this.player.cash)) {
-            console.log('death');
-        } else if (this.shotsLeft <= 0 && this.quota.isMet(this.player.cash)) {
-            console.log('passed');
+        if (this.shotsLeft <= 0 && this.player.y === 75) {
+            if (!this.quota.isMet(this.player.cash)) {
+                localStorage.removeItem('pegUpgrades');
+                localStorage.removeItem('globalUpgrades');
+                localStorage.removeItem('cash');
+                localStorage.removeItem('shotsLeft');
+                this.quota.reset();
+                this.scene.stop('shop');
+                this.scene.start('deathScene');
+            } else {
+                this.advanceRound();
+            }
         }
 
         // Charging for mouse and touch screen
