@@ -218,8 +218,10 @@ export default class mainScene extends Phaser.Scene {
             };
         });
 
-        this.input.on('pointerdown', () => {
-            this.isCharging = true;
+        this.input.on('pointerdown', (pointer) => {
+            if (pointer.y < 700) {
+                this.isCharging = true;
+            }
         });
 
         this.input.on('pointerup', () => {

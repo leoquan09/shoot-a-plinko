@@ -1,6 +1,7 @@
 // QuotaManager.js
 export class QuotaManager {
   constructor() {
+    const quota = localStorage.getItem('quota') || 0;
     const savedRound = parseInt(localStorage.getItem('level'), 10);
     this.currentRound = savedRound > 0 ? savedRound : 1;
 
@@ -31,10 +32,12 @@ export class QuotaManager {
   nextRound() {
     this.currentRound++;
     localStorage.setItem('level', this.currentRound);
+    localStorage.setItem('quota', this.getTarget());
   }
 
   reset() {
     this.currentRound = 1;
     localStorage.setItem('level', this.currentRound);
+    localStorage.setItem('quota', this.getTarget());
   }
 }
